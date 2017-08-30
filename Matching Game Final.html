@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head>
+  <title>Matching Game</title>
+
+  <style>
+    img{position:absolute}
+
+    div{position:absolute;width:500px;height:500px;}
+
+    #rightSide{left:500px;border-left:1px solid black;}
+
+  </style>
+
+<head>
+
+<body id = "the_body">
+  <h1> Matching Game </h1>
+  <p>Click on the extra smiling face on the left.</p>
+  <div id = "leftSide"></div>
+  <div id = "rightSide"></div>
+
+<script>
+
+
+  var numberOfFaces = 5;
+  var theLeftSide = document.getElementById("leftSide");
+  var theRightSide = document.getElementById('rightSide');
+  var theBody = document.getElementsByTagName("body")[0];
+  var leftSideImages;
+  var levelReached = 0;
+  var last_child;
+
+  //localStorage.setItem('highestlevelReached',0);
+
+window.onload = generateFaces;
+
+  function generateFaces()
+    {
+      var count = 0;
+
+      while(count<numberOfFaces)
+      {
+
+        /* Creating image*/
+        var image = document.createElement("IMG");
+        image.setAttribute("src","http://home.cse.ust.hk/~rossiter/mooc/matching_game/smile.png");
+
+
+        //console.log(image.height);
+
+        /* Setting up random top position */
+        var random_top = Math.random()*400;
+        random_top = Math.floor(random_top);
+        //console.log(random_top);
+        image.style.top = random_top+"px";
+
+        /* Setting up random left position */
+        var random_left = Math.floor(Math.random()*400);
+        //console.log(random_left);
+        image.style.left = random_left+"px";
+
+        theLeftSide.appendChild(image);
+        count++;
+        //console.log(theLeftSide.lastChild);
+      }
+
+      /* Copying the leftside div to rightside */
+      leftSideImages = theLeftSide.cloneNode(true);
+      var lastImage = leftSideImages.lastChild;
+      //console.log(lastImage);
+      lastImage.parentNode.removeChild(lastImage);
+      theRightSide.appendChild(leftSideImages);
+
+      //console.log(theLeftSide);
+      //console.log(theLeftSide.firstChild);
+
+      game(theLeftSide);
+      console.log(theLeftSide);
+
+
+    }
+
+    //console.log(theLeftSide);
+    //console.log(theLeftSide.firstChild);
+
+
+
+    //console.log(something);
+
+    /* This is the game logic function */
+    function game(theLeftSide)
+    {
+      console.log(theLeftSide.lastChild);
+
+      //the correct clicking event
+      theLeftSide.lastChild.onclick=
+      function nextLevel(event)
+        {
+          event.stopPropagation();
+          numberOfFaces += 5;
+          //Deleting all nodes
+          alert("Congratz, you got it correct, procedding to next level");
+          deleteNodes(theLeftSide,theRightSide);
+          generateFaces();
+          levelReached++;
+        };
+
+
+        //The wrong clciking event
+        theBody.onclick =
+        function gameOver()
+        {
+          alert("Game Over!");
+          alert("You have reached level:"+""+levelReached);
+          //theBody.onclick = null;
+          //theLeftSide.lastChild.onclick = null;
+
+          var highestlevelReached1 = localStorage.getItem("highestlevelReached");
+          if(levelReached>=highestlevelReached1)
+          {
+            localStorage.setItem('highestlevelReached',levelReached);
+            alert("You have set a new highest level record with:"+""+levelReached);
+          }
+          console.log(localStorage.highestlevelReached);
+          alert("Starting a new game");
+          location.reload();
+
+        }
+      };
+
+      //This function delets all nodes
+      function deleteNodes(theLeftSide,theRightSide)
+      {
+        //alert("delete function has been executed");
+        console.log("LeftSide firstChild:"+theLeftSide.firstChild);
+        console.log("RighttSide firstChild:"+theRightSide.firstChild);
+
+        //deleting leftside children
+        while(theLeftSide.firstChild)
+        {
+          var node = theLeftSide.lastChild;
+          node.parentNode.removeChild(node);
+        }
+
+
+        //deleting rightside children
+        while(theRightSide.firstChild)
+        {
+          var node = theRightSide.lastChild;
+          node.parentNode.removeChild(node);
+        }
+
+        console.log("LeftSide firstChild:"+theLeftSide.firstChild);
+        console.log("RighttSide firstChild:"+theRightSide.firstChild);
+
+      }
+
+</script>
+
+</body>
+
+</html>
